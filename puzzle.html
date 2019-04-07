@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>遠遠der 拼圖小遊戲</title>
+    <title>拼出美麗事物</title>
     <style>
         body {
             background: rgb(126, 180, 230);
@@ -33,24 +33,7 @@
   </head>
   <body>
     <h2 class="text-center"></h2>
-    <div id="result" class="row">
-        <div class="col-3 border" style="left: 0px; top: 0px; background-image: url('image/kudoharuka2.jpg'); background-position: 0px 0px;"></div>
-        <div class="col-3 border" style="left: 150px; top: 0px; background-image: url('image/kudoharuka2.jpg'); background-position: -150px 0px;"></div>
-        <div class="col-3 border" style="left: 300px; top: 0px; background-image: url('image/kudoharuka2.jpg'); background-position: -300px 0px;"></div>
-        <div class="col-3 border" style="left: 450px; top: 0px; background-image: url('image/kudoharuka2.jpg'); background-position: -450px 0px;"></div>
-        <div class="col-3 border" style="left: 0px; top: 150px; background-image: url('image/kudoharuka2.jpg'); background-position: 0px -150px;"></div>
-        <div class="col-3 border" style="left: 150px; top: 150px; background-image: url('image/kudoharuka2.jpg'); background-position: -150px -150px;"></div>
-        <div class="col-3 border" style="left: 300px; top: 150px; background-image: url('image/kudoharuka2.jpg'); background-position: -300px -150px;"></div>
-        <div class="col-3 border" style="left: 450px; top: 150px; background-image: url('image/kudoharuka2.jpg'); background-position: -450px -150px;"></div>
-        <div class="col-3 border" style="left: 0px; top: 300px; background-image: url('image/kudoharuka2.jpg'); background-position: -0px -300px;"></div>
-        <div class="col-3 border" style="left: 150px; top: 300px; background-image: url('image/kudoharuka2.jpg'); background-position: -150px -300px;"></div>
-        <div class="col-3 border" style="left: 300px; top: 300px; background-image: url('image/kudoharuka2.jpg'); background-position: -300px -300px;"></div>
-        <div class="col-3 border" style="left: 450px; top: 300px; background-image: url('image/kudoharuka2.jpg'); background-position: -450px -300px;"></div>
-        <div class="col-3 border" style="left: 0px; top: 450px; background-image: url('image/kudoharuka2.jpg'); background-position: -0px -450px;"></div>
-        <div class="col-3 border" style="left: 150px; top: 450px; background-image: url('image/kudoharuka2.jpg'); background-position: -150px -450px;"></div>
-        <div class="col-3 border" style="left: 300px; top: 450px; background-image: url('image/kudoharuka2.jpg'); background-position: -300px -450px;"></div>
-        <div class="col-3 border" style="left: 450px; top: 450px; background-image: url('image/kudoharuka2.jpg'); background-position: -450px -450px;"></div>
-    </div>
+    <div id="result" class="row"></div>
     <button id="start" type="button" class="btn btn-outline-dark">洗牌</button>
 
     <!-- Optional JavaScript -->
@@ -58,5 +41,41 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+      var width = +600;
+      var blockBase = +4;
+      var puzBase = width / blockBase;
+      var posConv = { };
+      var imgUrl = "url('image/kudoharuka2.jpg')";
+      $(function () {
+        //加入拼圖
+        for(var i = 0; i < 16; i++){
+          var x = i % 4;
+          var y = parseInt(i / 4);
+          $("<div></div>").attr("id", "puz" + i)
+                          .addClass("col-3 border")
+                          .css("left", x * puzBase + "px")
+                          .css("top", y * puzBase + "px")
+                          .css("background-image", imgUrl)
+                          .css("background-position", -1 * x * puzBase + "px " + -1 * y * puzBase + "px")
+                          .click(doChange)
+                          .appendTo("#result");
+          posConv[i] = {x: x, y: y};
+        }
+        //移除左上角
+        $("#puz0").css("background-image", "").removeClass("border");
+      });
+
+      function doChange(){
+        var puzzle = $("#result div");
+        console.log(puzzle);
+        var i = puzzle.index(this);
+        var nowthis = puzzle.eq(i);
+        console.log(nowthis);
+        var bef = nowthis.prev();
+        console.log(bef);
+        nowthis.after(bef);
+      }
+    </script>
   </body>
 </html>
