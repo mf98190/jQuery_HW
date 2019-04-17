@@ -49,10 +49,9 @@ $(function() {
 			if (cells.eq(j).attr("id") == "Pic0") //為空白格，交換位子
 			{
 				//排序，必要時對調，讓i < j
-				if (i > j) { var k = j; j = i; i = k; }
+			//	if (i > j) { var k = j; j = i; i = k; }
 				var ahead = cells.eq(i);
 				var behind = cells.eq(j);
-				console.log(ahead);
 				var behindPrev = behind.prev();
 				//左右對調
 				if (Math.abs(i - j) == 1)

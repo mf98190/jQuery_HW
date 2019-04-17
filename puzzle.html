@@ -17,6 +17,7 @@
             width: 600px;
             height: 600px;
             margin: 0 auto;
+            /* display: flex; */
             position: relative;
         }
         #start {
@@ -26,6 +27,9 @@
         }
         .col-3 {
             position: absolute;
+            /* float: left;
+            overflow: hidden;  */
+            /* padding: 0; */
             height: 150px;
             width: 150px;
         }
@@ -52,6 +56,7 @@
         for(var i = 0; i < 16; i++){
           var x = i % 4;
           var y = parseInt(i / 4);
+          //如果要用after交換拼圖的話不能用backgroung-img不知到為啥他不會跟著div順序改變而改變背景應該是要再重新loding果才會有更動八
           $("<div></div>").attr("id", "puz" + i)
                           .addClass("col-3 border")
                           .css("left", x * puzBase + "px")
@@ -60,10 +65,18 @@
                           .css("background-position", -1 * x * puzBase + "px " + -1 * y * puzBase + "px")
                           .click(doChange)
                           .appendTo("#result");
-          posConv[i] = {x: x, y: y};
+          // var html = "<img src='image/kudoharuka2.jpg' \
+          //                  style='margin-left:" + -1 * x * puzBase + "px; \
+          //                  margin-top:" + -1 * y * puzBase + "px;' />";
+          // $("<div></div>").attr("id", "puz" + i)
+          //                 .addClass("col-3 border")
+          //                 .html(html)
+          //                 .click(doChange)
+          //                 .appendTo("#result");
+          // posConv[i] = {x: x, y: y};
         }
         //移除左上角
-        $("#puz0").css("background-image", "").removeClass("border");
+        $("#puz0").html("").removeClass("border");
       });
 
       function doChange(){

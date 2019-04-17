@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+
+    <title>拼出美麗事物1</title>
+    <style>
+      body {
+        background: rgb(126, 180, 230);
+      }
+      #result {
+        width: 600px;
+        height: 600px;
+        margin: 0 auto;
+        /* position: relative; */
+      }
+      #start {
+        width: 600px;
+        display: block;
+        margin: 0 auto;
+      }
+      .col-3 {
+        /* position: absolute; */
+        float: left;
+        overflow: hidden;
+        padding: 0;
+        height: 150px;
+        width: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 class="text-center"></h2>
+    <div id="result" class="row"></div>
+    <button id="start" type="button" class="btn btn-outline-dark">洗牌</button>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      var posConv = {};  //puzzle index 對應的座標
+      function creatPuzzle(edge) {
+        //加入拼圖
+        var width = +600;
+        var puzBase = width / edge;
+        var imgUrl = "url('image/kudoharuka2.jpg')";
+        var size = edge * edge;
+        for (var i = 0; i < size; i++) {
+          var x = i % edge;
+          var y = parseInt(i / edge);
+          //如果要用after交換拼圖的話不能用backgroung-img不知到為啥他不會跟著div順序改變而改變背景應該是要再重新loding果才會有更動八
+          // $("<div></div>").attr("id", "puz" + i)
+          //                 .addClass("col-3 border")
+          //                 .css("left", x * puzBase + "px")
+          //                 .css("top", y * puzBase + "px")
+          //                 .css("background-image", imgUrl)
+          //                 .css("background-position", -1 * row * puzBase + "px " + -1 * col * puzBase + "px")
+          //                 .click(doChange)
+          //                 .appendTo("#result");
+          var html = "<img src='image/kudoharuka2.jpg' \
+                      style='margin-left:" + -1 * x * puzBase + "px; \
+                      margin-top:" + -1 * y * puzBase + "px;' />";
+          $("<div></div>")
+            .attr("id", "puz" + i)
+            .addClass(`col-3 border puz`)// 還要想要如何處理方格大小問題
+            .html(html)
+            .click(doChange)
+            .appendTo("#result");
+          posConv[i] = { x: x, y: y };
+        }
+        // console.log(Math.floor(12/edge));
+        //移除左上角
+        $("#puz0")
+          .html("")
+          .click("")
+          .removeClass("border");
+        
+        // $(".puz").on("cilck", function() {
+        //   var $this = $(this);
+        //   var puz = $(".puz");
+        //   var i = puz.index($this);
+        //   var toCheck = getNeighbor(i);
+        //   while(toCheck.length > 0){
+        //     var j = toCheck.pop();
+        //     if(puz.eq(j).attr("id") == "puz0"){
+        //       if(i > j) { var k = j; j = i; i = k;}
+        //       var nowthis = puz.eq(i);
+        //       var bef = puz.eq(j);
+        //       var befPrev = bef.prev();
+        //       if(Math.abs(i - j) == 1){
+        //         bef.after(nowthis);
+        //       }
+        //       else {
+        //         nowthis.after(bef);
+        //         befPrev.after(nowthis);
+        //       }
+        //     }
+        //   }
+        // });
+      }
+
+      function getNeighbor(i) {
+        var pool = [];
+        var x = posConv[i].x,
+            y = posConv[i].y;
+        if(y > 0){ //上
+          pool.push((y-1) * 4 + x);
+        }
+        if(y < 3){ //下
+          pool.push((y+1) * 4 + x);
+        }
+        if(x > 0){ //左
+          pool.push( y * 4 + x - 1)
+        }
+        if(x < 3){ //右
+          pool.push(y * 4 + x + 1)
+        }
+        return pool;
+      }
+
+      function doChange() {
+        var $this = $(this);
+        var puzs = $(".puz");
+        var i = puzs.index($this);
+        var toCheck = getNeighbor(i);
+        while (toCheck.length > 0) {
+          var j = toCheck.pop();
+          if (puzs.eq(j).attr("id") == "puz0") {
+            if (i > j) { var k = j; j = i; i = k; }
+            var nowthis = puzs.eq(i);
+            var bef = puzs.eq(j);
+            var befPrev = bef.prev();
+            if (Math.abs(i - j) == 1) {
+              bef.after(nowthis);
+            }
+            else {
+              nowthis.after(bef);
+              befPrev.after(nowthis);
+            }
+          }
+        }
+        isWin();
+      }
+
+      function isWin(){
+        var puzs = $(".puz");
+        var win = true;
+        for(var i = 0; i < puzs.length; i++){
+          // console.log(puzs.eq(i).attr("id"));
+          // console.log(`puz${i}`);
+          if(puzs.eq(i).attr("id") != `puz${i}`){
+            win = false;
+            break;
+          }
+        }
+        if(win){
+          alert("you win");
+        }
+      }
+
+      $("#start").click(function () {
+          for (var i = 0; i < 500; i++) {
+            var puzs = $(".puz");
+            var toMove = getNeighbor(puzs.index($("#puz0")[0]));
+            puzs.eq(toMove[parseInt(Math.random() * toMove.length)]).click();
+          }
+        });
+      creatPuzzle(4);
+    </script>
+  </body>
+</html>
